@@ -1,22 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Repositories\ContactRepository;
+use App\Services\ContactServiceImp;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    private $contactRepository;
+    private $contactService;
 
-    public function __construct(ContactRepository $contactRepository)
+    public function __construct(ContactServiceImp $contactService)
     {
-        $this->contactRepository = $contactRepository;
+        $this->contactService = $contactService;
     }
 
     public function index()
     {
-        $contacts = $this->contactRepository->getAll();
+        $contacts = $this->contactService->getAll();
 //        dd($contacts);
         return view('contacts.index')->with('contacts', $contacts);
     }
@@ -29,32 +28,32 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        $this->contactRepository->create($input);
+        $this->contactService->create($input);
         return redirect('contact')->with('flash_message', 'Contact Added!');
     }
 
     public function show($id)
     {
-        $contact = $this->contactRepository->getById($id);
+        $contact = $this->contactService->getById($id);
         return view('contacts.show')->with('contacts', $contact);
     }
 
     public function edit($id)
     {
-        $contact = $this->contactRepository->getById($id);
+        $contact = $this->contactService->getById($id);
         return view('contacts.edit')->with('contacts', $contact);
     }
 
     public function update(Request $request, $id)
     {
         $input = $request->all();
-        $this->contactRepository->update($id, $input);
+        $this->contactService->update($id, $input);
         return redirect('contact')->with('flash_message', 'Contact Updated!');
     }
 
     public function destroy($id)
     {
-        $this->contactRepository->delete($id);
+        $this->contactService->delete($id);
         return redirect('contact')->with('flash_message', 'Contact deleted!');
     }
 }
